@@ -21,7 +21,7 @@ MATRIX *get_mat(int n_row, int n_col);
 void set_mat(REAL a, MATRIX *A);
 void print_mat(MATRIX *A);
 void free_mat(MATRIX *A);
-void id_mat(MATRIX *A);
+void id_mat(MATRIX *A); // A = I
 void prod_scal_mat(REAL a, MATRIX *A, MATRIX *out); // out = a*A
 void lin_comb_mat(REAL a, MATRIX *A, REAL b, MATRIX *B, MATRIX *out); // out = a*A + b*B
 

@@ -188,7 +188,7 @@ void prod_mat_vec(MATRIX *A, VECTOR *v, VECTOR *out) {
 
     for(int i=0; i<A->n_row; i++)
         for(int j=0; j<A->n_col; j++)
-            out->v[i] += A->A[i][j]*v->v[j];
+            out->v[i] += A->A[i][j] * v->v[j];
 
 }
 
@@ -202,6 +202,6 @@ void prod_vec_mat(VECTOR *v, MATRIX *A, VECTOR *out) {
 
     for(int i=0; i<A->n_col; i++)
         for(int j=0; j<A->n_row; j++)
-            out->v[i] += v->v[j]*A->A[j][i];
+            out->v[i] += v->v[j] * A->A[j][i];
 
 }

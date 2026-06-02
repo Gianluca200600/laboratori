@@ -71,3 +71,7 @@ typedef struct {
 
 // Libraries
 #include "blas.h"
+#include "solver.h"
+#include "odesolver.h"
+#include "examples.h"
+#include "rkm.h"
