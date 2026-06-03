@@ -22,7 +22,6 @@ void exp_growth(REAL t, VECTOR *input, VECTOR *output, void *param) {
 void exp_growth_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
 
     EXP_GROWTH_DATA *data = (EXP_GROWTH_DATA*) param;
-    REAL z = input->v[0];
     REAL lambda = data->lambda;
 
     output->A[0][0] = lambda;

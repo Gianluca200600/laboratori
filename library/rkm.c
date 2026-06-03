@@ -33,7 +33,7 @@ void stability_rkm(COMPLEX *z, COMPLEX *R, RKM *mtd) {
 
     // Solve A*x=b
     lup(A, p);
-    linsolve_lup(A, p, b, x);
+    lup_solve(A, p, b, x);
 
     // Stability: Real part
     R->Re = 1.0;

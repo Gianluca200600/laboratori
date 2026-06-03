@@ -30,7 +30,7 @@ void  free_perm(PERM *P);
 void lup(MATRIX *M, PERM *P);
 
 // Gauss method for linear systems
-void lup_solve(MATRIX *LU, PERM *P, VECTOR *rhs);
+void lup_solve(MATRIX *LU, PERM *P, VECTOR *rhs, VECTOR *sol);
 
 // Newton's method
 REAL newton_solve(NONLIN_DATA *data, bool info);

@@ -32,8 +32,8 @@ REAL max_error_grid(FUNt sol, MATRIX *approx, VECTOR *grid, int dim, VECTOR *v, 
         app_n->v = approx->A[n];
         sol(grid->v[n], v, sol_n, param);
 
-        lin_comb(-1.0, app_n, 1.0, sol_n, sol_n);
-        err = vec_norm2(sol_n);
+        lin_comb_vec(-1.0, app_n, 1.0, sol_n, sol_n);
+        err = nrm2_vec(sol_n);
         max_err = MAX(max_err, err);
 
     }
@@ -61,7 +61,7 @@ void fe_solve(ODE_DATA *data, APPROX process) {
         data->f(tn, approx_prev, approx, data->param);
 
         prod_scal_vec(tau, approx_prev, approx_prev);
-        lin_comb(1.0, approx_prev, tau, approx, approx);
+        lin_comb_vec(1.0, approx_prev, tau, approx, approx);
 
         tn += tau;
 
@@ -93,11 +93,11 @@ void me_solve(ODE_DATA *data, APPROX process) {
         prod_scal_vec(1.0, approx, approx_prev);
         data->f(tn, approx_prev, K, data->param);
 
-        lin_comb(1.0, approx_prev, tau / 2.0, K, K);
+        lin_comb_vec(1.0, approx_prev, tau / 2.0, K, K);
 
         data->f(tn + tau / 2.0, K, approx, data->param);
 
-        lin_comb(1.0, approx_prev, tau/2.0, approx, approx);
+        lin_comb_vec(1.0, approx_prev, tau/2.0, approx, approx);
 
         tn += tau;
 

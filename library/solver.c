@@ -118,10 +118,12 @@ void lup_solve(MATRIX *LU, PERM *P, VECTOR *b, VECTOR *x) {
 
     for(int i=d-1; i>=0; i--) { 
     
-        b->v[i] /= LU->A[i][i];
-        
+        x->v[i] = temp->v[i];
+
         for(int j=i+1; j<d; j++)
-            b->v[i] -= LU->A[i][j]*b->v[j];
+            x->v[i] -= LU->A[i][j]*x->v[j];
+
+        x->v[i] /= LU->A[i][i];
     
     } // Solve U*x = temp by backward substitution
 
