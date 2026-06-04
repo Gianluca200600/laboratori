@@ -29,6 +29,9 @@ void stability_rkm(COMPLEX *z, COMPLEX *R, RKM *mtd) {
         A->A[i][i] += 1.0;
         A->A[i+s][i+s] += 1.0; 
 
+        b->v[i] = z->Re;
+        b->v[i+s] = z->Im;
+
     }
 
     // Solve A*x=b

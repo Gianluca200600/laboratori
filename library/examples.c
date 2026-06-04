@@ -120,3 +120,134 @@ void harm_osc_solve(REAL t, VECTOR *input, VECTOR *output, void *param) {
     output->v[1] = -v1*omega*sin(omega*t) + v2*cos(omega*t);
 
 }
+
+
+// Power function in t
+// IVP: f(t,z) = -(1-t)^p*z
+//      initial value: v
+// Solution: u(t) = -exp{(1-t)^{p+1} / (p+1)}
+
+void powert(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    POWERt_DATA *data = (POWERt_DATA*) param;
+    output->v[0] = -pow(1.0-t, data->p) * input->v[0];
+
+}
+
+void powert_solve(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    POWERt_DATA *data = (POWERt_DATA*) param;
+    output->v[0] = -exp(pow(1.0-t, 1.0+data->p) / (1.0+data->p));
+
+}
+
+
+// SIR model
+// z = (z1, z2, z3) = (S, I, R)
+//          ( -beta*z1*z2            )
+// f(t,z) = ( (beta*z1 - gamma) * z2 )
+//          ( gamma*z2               )
+
+void sir(REAL t, VECTOR *input, VECTOR* output, void *param) {
+
+    SIR_DATA *data = (SIR_DATA*) param;
+    REAL beta = data->beta;
+    REAL gamma = data->gamma;
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+    REAL z3 = input->v[2];
+
+    output->v[0] = -beta*z1*z2;
+    output->v[1] = (beta*z1 - gamma)*z2;
+    output->v[2] = gamma*z2;
+
+}
+
+void sir_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    SIR_DATA *data = (SIR_DATA*) param;
+    REAL beta = data->beta;
+    REAL gamma = data->gamma;
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+    REAL z3 = input->v[2];
+    
+    output->A[0][0] = -beta*z2;
+    output->A[0][1] = -beta*z1;
+    output->A[0][2] = 0.0;
+
+    output->A[1][0] = beta*z2;
+    output->A[1][1] = beta*z1 - gamma;
+    output->A[1][2] = 0.0;
+
+    output->A[2][0] = 0.0;
+    output->A[2][1] = gamma;
+    output->A[2][2] = 0.0;
+
+}
+
+
+// 1D Heat equation (discretized)
+// f(t,z) = -M^2*A*z + b where
+// b = [1,...1]^T 
+//     [ 2 -1  ..       ]
+//     [-1  2  -1  ..   ]
+// A = [   -1   2  -1 ..] 
+//     [   ..  ..  ..   ]
+//     [           -1  2]
+
+void heat(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    HEAT_DATA *data = (HEAT_DATA*) param;
+    REAL m = data->m;
+
+    // components loop
+    for(int i=0; i<data->m-1; i++) {
+
+        // diag
+        output->v[i] = 2.0*input->v[i];
+
+        if (i>0)
+            output->v[i] -= input->v[i-1];
+        if (i<data->m-2)
+            output->v[i] -= input->v[i+1];
+
+        output->v[i] *= -m*m;
+        output->v[i] += 1.0;
+
+    }
+
+}
+
+
+// Brussellator model for autocatalytic reactions
+// f(t,z) = ( A + z1^2*z2 - (B+1)*z1 )
+//          ( B*z1 - z1^2*z2 )
+
+void bruss(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    BRUSS_DATA *data = (BRUSS_DATA*) param;
+    REAL A = data->A;
+    REAL B = data->B;
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+
+    output->v[0] = A + z1*z1*z2 - (B + 1.0)*z1;
+    output->v[1] = B*z1 - z1*z1*z2;
+
+}
+
+void bruss_det(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    BRUSS_DATA *data = (BRUSS_DATA*) param;
+    REAL A = data->A;
+    REAL B = data->B;
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+
+    output->A[0][0] = 2*z1*z2 - (B + 1.0);
+    output->A[0][1] = z1*z1;
+    output->A[1][0] = B - 2*z1*z2;
+    output->A[1][1] = -z1*z1;
+
+}

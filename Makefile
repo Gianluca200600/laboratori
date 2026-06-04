@@ -43,6 +43,10 @@ l_3_3: l03/l_3_3.c $(LIBRARY_A)
 l_4_1: l04/l_4_1.c $(LIBRARY_A)
 	$(CC) $(CFLAGS) $< -L library/ -llibrary -o ./l04/l_4_1
 
+l_4_2: l04/l_4_2.c $(LIBRARY_A)
+	$(CC) $(CFLAGS) $< -L library/ -llibrary -o ./l04/l_4_2
+
+
 clean:
 	rm -f library/*.o library/*.a $(TARGETS) $(TARGETS:=.exe)
 

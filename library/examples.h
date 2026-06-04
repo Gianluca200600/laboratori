@@ -32,3 +32,40 @@ typedef struct{
 void harm_osc(REAL t, VECTOR *input, VECTOR *output, void *param);
 void harm_osc_der(REAL t, VECTOR *input, MATRIX *output, void *param);
 void harm_osc_solve(REAL t, VECTOR *input, VECTOR *output, void *param);
+
+
+// Power function 
+typedef struct{
+    REAL p;
+}POWERt_DATA;
+
+void powert(REAL t, VECTOR *input, VECTOR *output, void *param);
+void powert_solve(REAL t, VECTOR *input, VECTOR *output, void *param);
+
+
+// SIR model
+typedef struct {
+    REAL beta;
+    REAL gamma;
+}SIR_DATA;
+
+void sir(REAL t, VECTOR *input, VECTOR* output, void *param);
+void sir_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+
+
+// 1D Heat equation (discretized)
+typedef struct {
+    int m;
+}HEAT_DATA;
+
+void heat(REAL t, VECTOR *input, VECTOR *output, void *param);
+
+
+// Brussellator model for autocatalytic reactions
+typedef struct{
+    REAL A;
+    REAL B;
+}BRUSS_DATA;
+
+void bruss(REAL t, VECTOR *input, VECTOR *output, void *param);
+void bruss_det(REAL t, VECTOR *input, MATRIX *output, void *param);
