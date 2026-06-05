@@ -29,6 +29,31 @@ typedef struct {
     RKM *mtd; // Runge-Kutta method
 }ODE_DATA_ERK;
 
+typedef struct {
+    FUNt f;
+    DFUNt df;
+    VECTOR *v;
+    REAL t0;
+    REAL T;
+    int N;
+    REAL tol;
+    int kmax;
+    void *param;
+}ODE_DATA_BE;
+
+typedef struct {
+    FUNt f;
+    DFUNt df;
+    VECTOR *v;
+    REAL t0;
+    REAL T;
+    int N;
+    REAL tol;
+    int kmax;
+    RKM *mtd;
+    void *param;
+}ODE_DATA_IRK;
+
 
 // get_uniform_grid -> Generate uniform grid
 VECTOR *get_uniform_grid(REAL t0, REAL T, int N);
@@ -44,3 +69,9 @@ void me_solve(ODE_DATA *data, APPROX process);
 
 // erk_solve -> Explicit Runge-Kutta method
 void erk_solve(ODE_DATA_ERK *data, APPROX process);
+
+// be_solve -> Backward Euler method
+void be_solve(ODE_DATA_BE *data, APPROX approx);
+
+// irk_solve -> Implicit RUnge-Kutta method
+void irk_solve(ODE_DATA_IRK *data, APPROX approx);

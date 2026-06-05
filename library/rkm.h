@@ -18,3 +18,7 @@ RKM *get_rkm_ie();  // Improved Euler (Heun)
 RKM *get_rkm_rl();  // Ralston (Heun)
 RKM *get_rkm_rk3(); // 3rd-order explicit Runge-Kutta
 RKM *get_rkm_rk4(); // 4th-order explicit Runge-Kutta
+
+// Implicit RK methods
+RKM *get_rkm_ra(int s); // Radau
+RKM *get_rkm_ga(int s); // Gauss

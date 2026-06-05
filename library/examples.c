@@ -237,7 +237,7 @@ void bruss(REAL t, VECTOR *input, VECTOR *output, void *param) {
 
 }
 
-void bruss_det(REAL t, VECTOR *input, MATRIX *output, void *param) {
+void bruss_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
 
     BRUSS_DATA *data = (BRUSS_DATA*) param;
     REAL A = data->A;
@@ -249,5 +249,67 @@ void bruss_det(REAL t, VECTOR *input, MATRIX *output, void *param) {
     output->A[0][1] = z1*z1;
     output->A[1][0] = B - 2*z1*z2;
     output->A[1][1] = -z1*z1;
+
+}
+
+
+// 1D Allen-Cahn discretized equation
+// f(t,z) = -(1/2h)*A*z - F(z)/(eps^2) where
+//     [ 1 -1  ..       ]          [ z1^3 -z1 ]
+//     [-1  2  -1  ..   ]          [   ....   ]
+// A = [   -1   2  -1 ..]  and F = [   ....   ]
+//     [   ..  ..  ..   ]          [   ....   ]
+//     [           -1  1]          [ zd^3 -zd ]
+
+void allencahn(REAL t, VECTOR *input, VECTOR *output, void* param) {
+
+    ALLENCAHN_DATA *data = (ALLENCAHN_DATA*) param;
+    
+    int d = input->n + 1;
+
+    for(int i=0; i<d-1; i++) {
+
+        // Arix
+        if(i==0 || i==d-2)
+            output->v[i] = 1.0 * input->v[i];
+        else    
+            output->v[i] = 2.0 * input->v[i];
+
+        if(i>0)
+            output->v[i] -= input->v[i+1];
+        if(i<d-2)
+            output->v[i] -= input->v[i+1];
+        
+        output->v[i] *= -d / 2.0;
+        output->v[i] -= (input->v[i] -1.0)*input->v[i] / (data->eps*data->eps);
+
+    }
+
+}
+
+void allencahn_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    ALLENCAHN_DATA *data = (ALLENCAHN_DATA*) param;
+
+    int d = input->n + 1;
+
+    set_mat(0.0, output);
+
+    //components loop
+    for(int i=0; i<d-1; i++) {
+
+        if(i==0 || i==d-2)
+            output->A[i][i] = -d/2.0;
+        else
+            output->A[i][i] = -d/1.0;
+
+        // Off-diagonal entries
+        if(i>0)   output->A[i][i-1] = d/2.0;
+        if(i<d-2) output->A[i][i+1] = d/2.0;
+
+        // Add nonlinear contribution
+        output->A[i][i] -= (3.0*input->v[i]*input->v[i]-1.0) / (data->eps*data->eps);
+
+    }
 
 }

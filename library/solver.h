@@ -13,10 +13,10 @@ typedef struct{
 typedef struct{
     FUN F; 
     DFUN DF; 
-    void *param;
     VECTOR *sol; 
     int kmax; 
     REAL tol;
+    void *param;
 }NONLIN_DATA;
 
 

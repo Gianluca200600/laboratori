@@ -68,4 +68,13 @@ typedef struct{
 }BRUSS_DATA;
 
 void bruss(REAL t, VECTOR *input, VECTOR *output, void *param);
-void bruss_det(REAL t, VECTOR *input, MATRIX *output, void *param);
+void bruss_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+
+
+// 1D Allen-Cahn equation (discretized)
+typedef struct {
+    REAL eps;
+}ALLENCAHN_DATA;
+
+void allencahn(REAL t, VECTOR *input, VECTOR *output, void* param);
+void allencahn_der(REAL t, VECTOR *input, MATRIX *output, void *param);

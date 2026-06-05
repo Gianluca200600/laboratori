@@ -218,3 +218,167 @@ RKM *get_rkm_rk4() {
     return mtd;
 
 }
+
+
+// Radau
+RKM *get_rkm_ra1() {
+
+    RKM *mtd = get_rkm(1);
+
+    mtd->A->A[0][0] = 1.0;
+    mtd->b->v[0] = 1.0;
+    mtd->c->v[0] = 1.0;
+
+    return mtd;
+
+}
+
+RKM *get_rkm_ra2() {
+
+    RKM *mtd = get_rkm(2);
+
+    mtd->A->A[0][0] = 5.0/12.0; 
+    mtd->A->A[0][1] = -1.0/12.0;
+    mtd->A->A[1][0] = 3.0/4.0;
+    mtd->A->A[1][1] = 1.0/4.0;
+
+    // Fill b
+    mtd->b->v[0] = 3.0/4.0;
+    mtd->b->v[1] = 1.0/4.0;
+
+    // Vector c
+    mtd->c->v[0] = 1.0/3.0;
+    mtd->c->v[1] = 1.0;
+
+    return mtd;
+
+}
+
+RKM *get_rkm_ra3() {
+
+    REAL s6 = sqrt(6.0);
+    RKM *mtd = get_rkm(3);
+
+    mtd->A->A[0][0] = (+88.0 - 7.0*s6) / 360.0;
+    mtd->A->A[0][1] = (+296.0 - 169.0*s6) / 1800.0;
+    mtd->A->A[0][2] = (-2.0 + 3.0*s6) / 225.0;
+
+    mtd->A->A[1][0] = (+296.0 + 169.0*s6) / 1800.0;
+    mtd->A->A[1][1] = (+88.0 + 7.0*s6) / 360.0;
+    mtd->A->A[1][2] = (-2.0 - 3.0*s6) / 225.0;
+
+    mtd->A->A[2][0] = (+16.0 - 1.0*s6) / 36.0;
+    mtd->A->A[2][1] = (+16.0 + 1.0*s6) / 36.0;
+    mtd->A->A[2][2] = (+1.0) / 9.0;
+
+    // Fill b
+    mtd->b->v[0] = (16.0 - s6) / 36.0;
+    mtd->b->v[1] = (16.0 + s6) / 36.0;
+    mtd->b->v[2] = 1.0 / 9.0;
+
+    // Fill c
+    mtd->c->v[0] = (4.0 - s6) / 10.0;
+    mtd->c->v[1] = (4.0 + s6) / 10.0;
+    mtd->c->v[2] = 1.0;
+
+    return mtd;
+
+}
+
+RKM *get_rkm_ra(int s) {
+
+    switch(s) {
+
+        case 1: return get_rkm_ra1();
+        case 2: return get_rkm_ra2();
+        case 3: return get_rkm_ra3();
+
+        default: printf("\nget_rkm_ra: no Radau method with %d stadia is implemented\n", s);
+        exit(1);
+
+    }
+
+}
+
+
+// Gauss methods
+RKM *get_rkm_ga1() {
+
+    RKM *mtd = get_rkm(1);
+
+    mtd->A->A[0][0] = 1.0 / 2.0;
+    mtd->b->v[0] = 1.0;
+    mtd->c->v[0] = 1.0 / 2.0;
+
+    return mtd;
+
+}
+
+RKM *get_rkm_ga2(){
+
+    // Get tableau
+    RKM *mtd = get_rkm(2);
+
+    // Fill A
+    mtd->A->A[0][0] = 1.0 / 4.0;  
+    mtd->A->A[0][1] = 1.0 / 4.0 - sqrt(3.0) / 6.0;
+    mtd->A->A[1][0] = 1.0 / 4.0 + sqrt(3.0) / 6.0;
+    mtd->A->A[1][1] = 1.0 / 4.0;
+
+    // Fill b
+    mtd->b->v[0] = 1.0 / 2.0;
+    mtd->b->v[1] = 1.0 / 2.0;
+
+    // Vector c
+    mtd->c->v[0] = 1.0 / 2.0 - sqrt(3.0) / 6.0;
+    mtd->c->v[1] = 1.0 / 2.0 + sqrt(3.0) / 6.0;
+
+    return mtd;
+}
+
+RKM *get_rkm_ga3(){
+
+    REAL s15 = sqrt(15);
+
+    // Get tableau
+    RKM *mtd = get_rkm(3);
+
+    // Fill A
+    mtd->A->A[0][0] = 5.0 / 36.0;
+    mtd->A->A[0][1] = 8.0 / 36.0 - s15 / 15.0;
+    mtd->A->A[0][2] = 5.0 / 36.0 - s15 / 30.0;
+
+    mtd->A->A[1][0] = 5.0 / 36.0 + s15 / 24.0;
+    mtd->A->A[1][1] = 8.0 / 36.0;
+    mtd->A->A[1][2] = 5.0 / 36.0 - s15 / 24.0;
+
+    mtd->A->A[2][0] = 5.0 / 36.0 + s15 / 30.0;
+    mtd->A->A[2][1] = 8.0 / 36.0 + s15 / 15.0;
+    mtd->A->A[2][2] = 5.0 / 36.0;
+
+    // Fill b
+    mtd->b->v[0] = 5.0 / 18.0;
+    mtd->b->v[1] = 8.0 / 18.0;
+    mtd->b->v[2] = 5.0 / 18.0;
+
+    // Fill c
+    mtd->c->v[0] = 1.0 / 2.0 - s15 / 10.0;
+    mtd->c->v[1] = 1.0 / 2.0;
+    mtd->c->v[2] = 1.0 / 2.0 + s15 / 10.0;
+
+    return mtd;
+}
+
+RKM *get_rkm_ga(int s){
+
+    switch(s){
+
+        case 1: return get_rkm_ga1();
+        case 2: return get_rkm_ga2();
+        case 3: return get_rkm_ga3();
+
+        default: printf("\nget_rkm_ga: no Gauss method with %d stadia is implemented\n", s);
+        exit(1);
+    }
+    
+ }
