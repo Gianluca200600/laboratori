@@ -41,16 +41,16 @@ int main() {
         t0,
         T,
         10,
-        NULL,
         1e-14,
         15,
+        NULL,
         &log_growth_data
     };
 
     // steps loop
     for(int k=0; k<=15; k++) {
 
-        fprintf(f, "%6d", data.N);
+        fprintf(f, "%6d\t ", data.N);
 
         // stadia loop
         for(int s=0; s<3; s++) {
@@ -58,7 +58,13 @@ int main() {
             err = 0.0;
             data.mtd = get_rkm_ra(s+1);
 
+            irk_solve(&data, &process);
+            fprintf(f, "%.2e\t", err);
+
         }
+
+        fprintf(f, "\n");
+        data.N *= 2;
 
     }
 

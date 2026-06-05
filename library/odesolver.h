@@ -25,8 +25,8 @@ typedef struct {
     REAL t0;
     REAL T;
     int N;
-    void *param;
     RKM *mtd; // Runge-Kutta method
+    void *param;
 }ODE_DATA_ERK;
 
 typedef struct {

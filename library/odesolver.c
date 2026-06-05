@@ -326,7 +326,7 @@ void irk_fun(VECTOR *input, VECTOR *output, void *param) {
     }
 
     free_vec(z);
-    free-vec(eval);
+    free_vec(eval);
 
 }
 

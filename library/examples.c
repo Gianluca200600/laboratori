@@ -313,3 +313,67 @@ void allencahn_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
     }
 
 }
+
+
+// Prothero_robinson equation
+// f(t,z) = lambda(z - sin(2*PI*t)) + 2*PI*cos(2*PI*t)
+// Solution: u(t) = exp(lambda*t)v + sin(2*PI*t)
+
+void prorob(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    PROROB_DATA *data = (PROROB_DATA*) param;
+    REAL lambda = data->lambda;
+
+    output->v[0] = lambda*(input->v[0] - sin(2.0*PI*t)) + 2.0*PI*cos(2.0*PI*t);
+
+}
+
+void prorob_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    PROROB_DATA *data = (PROROB_DATA*) param;
+    REAL lambda = data->lambda;
+
+    output->A[0][0] = lambda;
+
+}
+
+void prorob_solve(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    PROROB_DATA *data = (PROROB_DATA*) param;
+    REAL lambda = data->lambda;
+
+    output->v[0] = exp(lambda*t)*input->v[0] + sin(2.0*PI*t);
+
+}
+
+
+// Lotka-Volterra equations
+// f(t,z) = ( alpha*z1 - beta*z1*z2 )
+//          ( beta*z1*z2 - gamma*z2 )
+
+void lotvol(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    LOTVOL_DATA *data = (LOTVOL_DATA*) param;
+    REAL alpha = data->alpha;
+    REAL beta = data->beta;
+    REAL gamma = data->gamma;
+
+    output->v[0] = input->v[0]*(alpha - beta*input->v[1]);
+    output->v[1] = (beta*input->v[0] - gamma)*input->v[1];
+
+}
+
+void lotvol_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    LOTVOL_DATA *data = (LOTVOL_DATA*) param;
+    REAL alpha = data->alpha;
+    REAL beta = data->beta;
+    REAL gamma = data->gamma;
+
+    output->A[0][0] = alpha - beta*input->v[1];
+    output->A[0][1] = -beta*input->v[0];
+
+    output->A[1][0] = beta*input->v[1];
+    output->A[1][1] = beta*input->v[0] - gamma;
+
+}

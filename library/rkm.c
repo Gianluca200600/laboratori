@@ -61,7 +61,7 @@ void stability_rkm(COMPLEX *z, COMPLEX *R, RKM *mtd) {
 // Generic RK method with s stages, Butcher table 
 RKM *get_rkm(int s) {
 
-    RKM *mtd = malloc(sizeof(RKM *));
+    RKM *mtd = malloc(sizeof(RKM));
 
     mtd->A = get_mat(s, s);
     mtd->b = get_vec(s);

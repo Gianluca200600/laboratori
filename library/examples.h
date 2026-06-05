@@ -78,3 +78,24 @@ typedef struct {
 
 void allencahn(REAL t, VECTOR *input, VECTOR *output, void* param);
 void allencahn_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+
+
+// Prothero_robinson equation
+typedef struct {
+    REAL lambda;
+}PROROB_DATA;
+
+void prorob(REAL t, VECTOR *input, VECTOR *output, void *param);
+void prorob_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+void prorob_solve(REAL t, VECTOR *input, VECTOR *output, void *param);
+
+
+// Lotka-Volterra equations
+typedef struct {
+    REAL alpha;
+    REAL beta;
+    REAL gamma;
+}LOTVOL_DATA;
+
+void lotvol(REAL t, VECTOR *input, VECTOR *output, void *param);
+void lotvol_der(REAL t, VECTOR *input, MATRIX *output, void *param);
