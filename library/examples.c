@@ -377,3 +377,109 @@ void lotvol_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
     output->A[1][1] = beta*input->v[0] - gamma;
 
 }
+
+
+// Oregonator
+//          ( 77.27*(z2 + z1*(1 - 8.375+10^{-6}*z1 - z2)) )
+// f(t,z) = (         z3 - (1 + z1)*z2 / 77.27            )
+//          (               0.161*(z1 - z3)               )
+
+void oregon(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+    REAL z3 = input->v[2];
+
+    output->v[0] = 77.27*(z2 + z1*(1.0 - 8.375e-6*z1 - z2));
+    output->v[1] = (z3 - (1.0 + z1)*z2)/77.27;
+    output->v[2] = 0.161*(z1 - z3);
+
+}
+
+void oregon_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    REAL z1 = input->v[0];
+    REAL z2 = input->v[1];
+    REAL z3 = input->v[2];
+
+    output->A[0][0] = 77.27*(1.0 - 2.0*8.375e-6*z1 - z2);
+    output->A[0][1] = 77.27*(1.0 - z1);
+    output->A[0][2] = 0.0;
+
+    output->A[1][0] = -z2 / 77.27;
+    output->A[1][1] = -(1.0 + z1) / 77.27;
+    output->A[1][2] = 1.0 / 77.27;
+
+    output->A[2][0] = 0.161;
+    output->A[2][1] = 0.0;
+    output->A[2][2] = -0.161;
+
+}
+
+
+// Hodgkin-Huxley
+
+void hodhux(REAL t, VECTOR *input, VECTOR *output, void *param) {
+
+    HOD_HUX_DATA *data = (HOD_HUX_DATA*) param;
+
+    REAL v = input->v[0];
+    REAL m = input->v[1];
+    REAL h = input->v[2];
+    REAL n = input->v[3];
+
+    REAL gNa = data->gNa;
+    REAL gK = data->gK;
+    REAL gL = data->gL;
+    REAL vNa = data->vNa;
+    REAL vK = data->vK;
+    REAL vL = data->vL;
+
+    output->v[0] = -gNa*SQR(m)*m*h*(v - vNa) -gK*SQR(n)*SQR(n)*(v - vK) -gL*(v - vL);
+    output->v[1] = 0.1*(25.0 - v)*(1.0 - m)/(exp((25.0-v)/10.0) -1.0) - 4.0*exp(-v/18.0)*m;
+    output->v[2] = 0.07*exp(-v/20.0)*(1.0 - h) - h/(exp((30.0-v)/10.0) + 1.0);
+    output->v[3] = 0.01*(10.0 -v)*(1.0 - n)/(exp((10.0 - v)/10.0) - 1.0) - 0.125*exp(-v/80.0)*n;    
+
+}
+
+void hodhux_der(REAL t, VECTOR *input, MATRIX *output, void *param) {
+
+    HOD_HUX_DATA *data = (HOD_HUX_DATA*) param;
+
+    REAL v = input->v[0];
+    REAL m = input->v[1];
+    REAL h = input->v[2];
+    REAL n = input->v[3];
+
+    REAL gNa = data->gNa;
+    REAL gK = data->gK;
+    REAL gL = data->gL;
+    REAL vNa = data->vNa;
+    REAL vK = data->vK;
+    REAL vL = data->vL;
+
+    output->A[0][0] = -gNa*SQR(m)*m*h -gK*SQR(n)*SQR(n) -gL;
+    output->A[0][1] = -3.0*gNa*SQR(m)*h*(v - vNa);
+    output->A[0][2] = -gNa*SQR(m)*m*(v - vNa);
+    output->A[0][3] = -4.0*gK*SQR(n)*n*(v - vK);
+
+    output->A[1][0] = -0.1*(1.0 - m)/(exp((25.0-v)/10.0) -1.0)
+                     + 0.01*(25.0 - v)*(1.0 - m)*exp((25.0-v)/10.0)/SQR(exp((25.0-v)/10.0) -1.0)
+                     +(4.0/18.0)*exp(-v/18.0)*m;
+    output->A[1][1] = -0.1*(25.0 - v)/(exp((25.0-v)/10.0) -1.0) - 4.0*exp(-v/18.0);
+    output->A[1][2] = 0.0;
+    output->A[1][3] = 0.0;
+
+    output->A[2][0] = -(0.07/20.0)*exp(-v/20.0)*(1.0 - h) - (h/10.0)*exp((30.0-v)/10.0)/SQR(exp((30.0-v)/10.0) + 1.0);
+    output->A[2][1] = 0.0;
+    output->A[2][2] =-0.07*exp(-v/20.0) - 1.0/(exp((30.0-v)/10.0) + 1.0);;
+    output->A[2][3] = 0.0;
+
+    output->A[3][0] = - 0.01*(1.0 - n)/(exp((10.0 - v)/10.0) - 1.0)
+                     + 0.001*(10.0 -v)*(1.0 - n)*exp((10.0 - v)/10.0)/SQR(exp((10.0 - v)/10.0) - 1.0)
+                     + (0.125/80.0)*exp(-v/80.0)*n;;
+    output->A[3][1] = 0.0;
+    output->A[3][2] = 0.0;
+    output->A[3][3] =-0.01*(10.0 -v)/(exp((10.0 - v)/10.0) - 1.0) - 0.125*exp(-v/80.0);
+
+}

@@ -99,3 +99,22 @@ typedef struct {
 
 void lotvol(REAL t, VECTOR *input, VECTOR *output, void *param);
 void lotvol_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+
+
+// Oregonator
+void oregon(REAL t, VECTOR *input, VECTOR *output, void *param);
+void oregon_der(REAL t, VECTOR *input, MATRIX *output, void *param);
+
+
+// Hodgkin-Huxley
+typedef struct{
+    REAL gNa;
+    REAL gK;
+    REAL gL;
+    REAL vNa;
+    REAL vK;
+    REAL vL;
+}HOD_HUX_DATA;
+
+void hodhux(REAL t, VECTOR *input, VECTOR *output, void *param);
+void hodhux_der(REAL t, VECTOR *input, MATRIX *output, void *param);
